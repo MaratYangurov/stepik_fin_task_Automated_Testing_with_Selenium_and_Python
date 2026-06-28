@@ -45,3 +45,13 @@ class BasePage():
 
     def should_be_login_link(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented"
+
+    def go_to_basket_page(self):
+        # Переход в корзину по кнопке в шапке сайта
+        basket_link = self.browser.find_element(*BasePageLocators.BASKET_LINK)
+        basket_link.click()
+
+    def should_be_basket_link(self):
+        # Проверка наличия ссылки на корзину в шапке
+        assert self.is_element_present(*BasePageLocators.BASKET_LINK), \
+            "Basket link is not presented"
