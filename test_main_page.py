@@ -1,6 +1,7 @@
 from .pages.main_page import MainPage
 from .pages.login_page import LoginPage
-from .pages.cart_page import CartPage
+from .pages.basket_page import BasketPage
+from .pages.base_page import BasePage
 import pytest
 
 link = "http://selenium1py.pythonanywhere.com/"
@@ -8,7 +9,6 @@ link = "http://selenium1py.pythonanywhere.com/"
 
 @pytest.mark.login_guest
 class TestLoginFromMainPage:
-
     def test_guest_can_go_to_login_page(self, browser):
         page = MainPage(browser, link)
         page.open()
@@ -21,14 +21,12 @@ class TestLoginFromMainPage:
         page.open()
         page.should_be_login_link()
 
-
-def test_guest_cant_see_product_in_basket_opened_from_main_page(browser):
-    page = MainPage(browser, link)
-    page.open()
-    page.go_to_cart_page()
-    cart_page = CartPage(browser, browser.current_url)
-    cart_page.check_no_product_in_cart()
-    cart_page.check_present_message_basket_is_empty()
-    cart_page.check_message_basket_is_empty()
+    def test_guest_cant_see_product_in_basket_opened_from_main_page(self, browser):
+        page = MainPage(browser, link)
+        page.open()
+        page.go_to_cart_page()
+        cart_page = BasketPage(browser, browser.current_url)
+        cart_page.should_is_basket_empty()
+        cart_page.should_empty_cart_message()
 
 # pytest -v --tb=line --language=en test_main_page.py
