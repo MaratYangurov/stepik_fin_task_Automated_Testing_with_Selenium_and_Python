@@ -4,17 +4,20 @@ from .locators import ProductPageLocators
 
 class ProductPage(BasePage):
     def add_product_in_cart(self):
+        # Нажатие на кнопку "Добавить в корзину"
         self.browser.find_element(*ProductPageLocators.BUTTON_ADD_TO_BASKET).click()
 
     def check_name_added_product_in_notification(self):
-        name_product = self.browser.find_element(*ProductPageLocators.NAME_PRODUCT_H1).text
+        # Сообщение о том, что товар добавлен в корзину.
+        name_product = self.browser.find_element(*ProductPageLocators.NAME_PRODUCT).text
         notification_name_product = self.browser.find_element(*ProductPageLocators.NOTIFICATIONS).text
-        assert name_product == notification_name_product, "в уведомлении отсутсвует наименование добавленного в корзину продукта"
+        assert name_product == notification_name_product, 'Отсутствует сообщение о том, что товар добавлен в корзину.'
 
     def check_price_added_product_in_notification(self):
+        # Сообщение со стоимостью корзины.
         price_product = self.browser.find_element(*ProductPageLocators.PRICE_PRODUCT).text
         notification_price_product = self.browser.find_elements(*ProductPageLocators.NOTIFICATIONS)[2].text
-        assert price_product == notification_price_product, "в уведомлении о стоимости корзины отсутсвует цена либо не верная цена продукта"
+        assert price_product == notification_price_product, 'Отсутствует cообщение со стоимостью корзины, либо его нет.'
 
     def should_not_be_success_message(self):
         assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE), \
