@@ -1,5 +1,6 @@
 from .base_page import BasePage
 from selenium.webdriver.common.by import By
+from .locators import LoginPageLocators
 
 
 class LoginPage(BasePage):
@@ -9,14 +10,16 @@ class LoginPage(BasePage):
         self.should_be_register_form()
 
     def should_be_login_url(self):
-        # Проверяет, что в URL присутствует подстрока "login"
-        current_url = self.browser.current_url
-        assert "login" in current_url, f'Expected substring "login" in URL, but received "{current_url}"'
+        assert "login" in self.browser.current_url, f"url не содержит в себе /login"
 
     def should_be_login_form(self):
-        # реализуйте проверку, что есть форма логина
-        assert self.is_element_present(By.CSS_SELECTOR, "#login_form"), 'Login form is not presented on the page'
+        assert self.is_element_present(*LoginPageLocators.LOGIN_FORM), "нет формы логина"
 
     def should_be_register_form(self):
-        # реализуйте проверку, что есть форма регистрации на странице
-        assert self.is_element_present(By.CSS_SELECTOR, "#register_form"), 'Register form is not presented on the page'
+        assert self.is_element_present(*LoginPageLocators.REGISTER_FORM), "нет формы регистрации"
+
+    def register_new_user(self, email, password):
+        self.browser.find_element(*LoginPageLocators.REGISTRATION_EMAIL).send_keys(email)
+        self.browser.find_element(*LoginPageLocators.REGISTRATION_PASSW_1).send_keys(password)
+        self.browser.find_element(*LoginPageLocators.REGISTRATION_PASSW_2).send_keys(password)
+        self.browser.find_element(*LoginPageLocators.REGISTRATION_SUBMIT).click()

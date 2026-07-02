@@ -1,59 +1,27 @@
 from .base_page import BasePage
-from selenium.webdriver.common.by import By
-import math
-from selenium.common.exceptions import NoAlertPresentException
+from .locators import ProductPageLocators
 
 
 class ProductPage(BasePage):
-    ADD_TO_BASKET = (By.CSS_SELECTOR, "button.btn-add-to-basket")
+    def add_product_in_cart(self):
+        self.browser.find_element(*ProductPageLocators.BUTTON_ADD_TO_BASKET).click()
 
-    PRODUCT_NAME = (By.CSS_SELECTOR, ".product_main h1")
-    PRODUCT_PRICE = (By.CSS_SELECTOR, ".product_main .price_color")
+    def check_name_added_product_in_notification(self):
+        name_product = self.browser.find_element(*ProductPageLocators.NAME_PRODUCT_H1).text
+        notification_name_product = self.browser.find_element(*ProductPageLocators.NOTIFICATIONS).text
+        assert name_product == notification_name_product, "в уведомлении отсутсвует наименование добавленного в корзину продукта"
 
-    SUCCESS_MESSAGE = (By.CSS_SELECTOR, ".alert-success .alertinner strong")
-    BASKET_PRICE = (By.CSS_SELECTOR, ".alert-info .alertinner strong")
+    def check_price_added_product_in_notification(self):
+        price_product = self.browser.find_element(*ProductPageLocators.PRICE_PRODUCT).text
+        notification_price_product = self.browser.find_elements(*ProductPageLocators.NOTIFICATIONS)[2].text
+        assert price_product == notification_price_product, "в уведомлении о стоимости корзины отсутсвует цена либо не верная цена продукта"
 
-    def add_product_to_basket(self):
-        button = self.browser.find_element(*self.ADD_TO_BASKET)
-        button.click()
+    def should_not_be_success_message(self):
+        assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE), \
+            "Success message is presented, but should not be"
 
-    def get_product_name(self):
-        # Возвращает название товара со страницы
-        return self.browser.find_element(*self.PRODUCT_NAME).text
+    def success_message_disappears(self):
+        assert self.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE), \
+            "The success message does not disappear"
 
-    def get_product_price(self):
-        # Возвращает цену товара со страницы
-        return self.browser.find_element(*self.PRODUCT_PRICE).text
-
-    def should_be_product_name_in_message(self, expected_name):
-        # Проверяем название товара в сообщении
-        actual_name = self.browser.find_element(
-            *self.SUCCESS_MESSAGE
-        ).text
-        assert actual_name == expected_name, \
-            f"Expected '{expected_name}', got '{actual_name}'"
-
-    def should_be_price_in_basket(self, expected_price):
-        # Проверяем цену корзины
-        actual_price = self.browser.find_element(
-            *self.BASKET_PRICE
-        ).text
-
-        assert actual_price == expected_price, \
-            f"Expected '{expected_price}', got '{actual_price}'"
-
-    def solve_quiz_and_get_code(self):
-        alert = self.browser.switch_to.alert
-        x = alert.text.split(" ")[2]
-        answer = str(
-            math.log(abs(12 * math.sin(float(x))))
-        )
-        alert.send_keys(answer)
-        alert.accept()
-        try:
-            alert = self.browser.switch_to.alert
-            print(f"Your code: {alert.text}")
-            alert.accept()
-        except NoAlertPresentException:
-            print("No second alert presented")
 

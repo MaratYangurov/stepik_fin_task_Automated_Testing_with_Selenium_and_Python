@@ -23,6 +23,10 @@ def browser(request):
         options = Options()
         options.add_experimental_option(
             'prefs', {'intl.accept_languages': user_language})
+        options.add_argument("--headless")
+        options.add_argument("--window-size=1920,1080")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
         browser = webdriver.Chrome(options=options)
     elif browser_name == "firefox":
         print("\nstart firefox browser for test..")
@@ -35,15 +39,8 @@ def browser(request):
         browser = webdriver.Firefox(options=firefox_options)
     else:
         raise pytest.UsageError("--browser_name should be chrome or firefox")
+    browser.maximize_window()
     yield browser
     print('\nquit browser..')
     browser.quit()
 
-
-@pytest.fixture(scope='function')
-def load_config():
-    # Открываем файл с конфигом в режиме чтения
-    with open('config.json', 'r') as config_file:
-        # С помощью библиотеки json читаем и возвращаем результат
-        config = json.load(config_file)
-        return config

@@ -1,7 +1,10 @@
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, NoAlertPresentException
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from .locators import BasePageLocators
+from .locators import MainPageLocators
+import math
 
 
 class BasePage():
@@ -37,6 +40,21 @@ class BasePage():
 
         return True
 
+    def solve_quiz_and_get_code(self):
+        alert = self.browser.switch_to.alert
+        x = alert.text.split(" ")[2]
+        answer = str(math.log(abs((12 * math.sin(float(x))))))
+        alert.send_keys(answer)
+        alert.accept()
+        try:
+            alert = self.browser.switch_to.alert
+            alert_text = alert.text
+            print(f"Your code: {alert_text}")
+            alert.accept()
+        except NoAlertPresentException:
+            print("No second alert presented")
+
+
     def go_to_login_page(self):
         link = self.browser.find_element(*BasePageLocators.LOGIN_LINK_INVALID)
         link.click()
@@ -44,12 +62,12 @@ class BasePage():
     def should_be_login_link(self):
         assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link is not presented"
 
-    def go_to_basket_page(self):
-        # Переход в корзину по кнопке в шапке сайта
-        basket_link = self.browser.find_element(*BasePageLocators.BASKET_LINK)
-        basket_link.click()
+    def go_to_cart_page(self):
+        self.browser.find_element(*MainPageLocators.CART_LINK).click()
 
-    def should_be_basket_link(self):
-        # Проверка наличия ссылки на корзину в шапке
-        assert self.is_element_present(*BasePageLocators.BASKET_LINK), \
-            "Basket link is not presented"
+    def guest_go_to_basket_page(self):
+        self.browser.find_element(*BasePageLocators.BASKET_LINK).click()
+
+    def should_be_authorized_user(self):
+        assert self.is_element_present(*BasePageLocators.USER_ICON), "User icon is not presented," \
+                                                                     " probably unauthorised user"
