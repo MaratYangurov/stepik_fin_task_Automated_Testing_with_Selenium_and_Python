@@ -59,7 +59,7 @@ class BasePage():
 
 
     def go_to_login_page(self):
-        link = self.browser.find_element(*BasePageLocators.LOGIN_LINK_INVALID)
+        link = self.browser.find_element(*BasePageLocators.LOGIN_LINK)
         link.click()
 
     def should_be_login_link(self):
@@ -67,15 +67,6 @@ class BasePage():
 
     def go_to_cart_page(self):
         self.browser.find_element(*MainPageLocators.CART_LINK).click()
-
-
-
-
-
-
-
-
-
 
     def guest_go_to_basket_page(self):
         self.browser.find_element(*BasePageLocators.BASKET_LINK).click()

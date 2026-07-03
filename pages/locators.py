@@ -15,7 +15,6 @@ class LoginPageLocators:
 
 class BasePageLocators:
     LOGIN_LINK = (By.CSS_SELECTOR, "#login_link")
-    LOGIN_LINK_INVALID = (By.CSS_SELECTOR, "#login_link_inc")
     USER_ICON = (By.CSS_SELECTOR, ".icon-user")
     BASKET_LINK = (By.CSS_SELECTOR, ".basket-mini a.btn-default")
 
@@ -34,3 +33,4 @@ class CartPageLocators:
 class BasketPageLocators:
     FORMSET = (By.CSS_SELECTOR, '#basket_formset')
     EMPTY_BASKET = (By.CSS_SELECTOR, '#content_inner > p a')
+    USER_ICON = (By.CSS_SELECTOR, ".icon-user")

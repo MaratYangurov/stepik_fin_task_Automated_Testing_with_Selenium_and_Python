@@ -5,7 +5,7 @@ from .pages.login_page import LoginPage
 from .pages.basket_page import BasketPage
 
 @pytest.mark.login_guest
-class TestProductPage:
+class TestProductPage():
     link = 'https://selenium1py.pythonanywhere.com/ru/catalogue/coders-at-work_207/'
     @pytest.mark.parametrize(
         'param_link',
@@ -83,34 +83,29 @@ class TestProductPage:
         cart_page.should_is_basket_empty()
         cart_page.should_empty_cart_message()
 
-
-
-
-
-
-
-
-
-class TestUserAddToBasketFromProductPage:
-
+@pytest.mark.login_guest
+class TestUserAddToBasketFromProductPage():
+    link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
     @pytest.fixture(scope='function', autouse=True)
     def setup(self, browser):
-        page = LoginPage(browser, "http://selenium1py.pythonanywhere.com/en-gb/accounts/login/")
+        link = "http://selenium1py.pythonanywhere.com/en-gb/accounts/login/"
+        page = LoginPage(browser, link)
+        email = str(time.time()) + "@fakemail.org"
+        password = "Qwerty123456"
         page.open()
-        page.register_new_user(str(time.time()) + "@fakemail.org", "1qazXSW@@WSXzaq1")
+        page.register_new_user(email, password)
         page.should_be_authorized_user()
 
-    def test_user_cant_see_success_message(self, browser):
-        link = "https://selenium1py.pythonanywhere.com/ru/catalogue/coders-at-work_207/"
-        page = ProductPage(browser, link)
+    def test_user_cant_see_success_message(self, browser, setup):
+        page = ProductPage(browser, self.link)
         page.open()
         page.should_not_be_success_message()
 
     @pytest.mark.need_review
-    def test_user_can_add_product_to_basket(self, browser):
-        link = "https://selenium1py.pythonanywhere.com/ru/catalogue/coders-at-work_207/"
-        page = ProductPage(browser, link)
+    def test_user_can_add_product_to_basket(self, browser, setup):
+        page = ProductPage(browser, self.link)
         page.open()
+
         page.add_product_in_cart()
         page.check_name_added_product_in_notification()
         page.check_price_added_product_in_notification()
